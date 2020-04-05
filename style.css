@@ -1,0 +1,72 @@
+body {
+    font-family: "Trebuchet MS", "Helvetica", sans-serif
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#input {
+    width: 704px;
+    margin-bottom: 40px;
+    font-family: "Trebuchet MS", "Helvetica", sans-serif;
+}
+
+/* keyboard */
+
+.keyboard {
+    width: 704px;
+    background-color: #888888;
+    border: 3px solid #222222;
+    border-radius: 5px;
+    font-family: "Trebuchet MS", "Helvetica", sans-serif;
+}
+
+.keyboard__keys {
+    
+}
+
+.keyboard__key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 40px;
+    margin: 3px;
+    border-radius: 4px;
+    border: none;
+    background-color: #444444;
+    color: #ffffff;
+    font-size: 1.05rem;
+    cursor: pointer;
+    vertical-align: top;
+}
+
+.keyboard__key--wide {
+    width: 100px;
+}
+
+.keyboard__key--easy-wide {
+    width: 50px;
+}
+
+.keyboard__key--middle-wide {
+    width: 86px;
+}
+
+.keyboard__key--del {
+    width: 44px;
+}
+
+.keyboard__key--extra-wide {
+    width: 330px;
+}
+
+.keyboard__key--dark {
+    background-color: #222222;
+    line-height: 40px;
+}
