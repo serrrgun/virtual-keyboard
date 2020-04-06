@@ -26,10 +26,6 @@ body {
     font-family: "Trebuchet MS", "Helvetica", sans-serif;
 }
 
-.keyboard__keys {
-    
-}
-
 .keyboard__key {
     display: inline-flex;
     align-items: center;
@@ -69,4 +65,20 @@ body {
 .keyboard__key--dark {
     background-color: #222222;
     line-height: 40px;
+}
+
+.keyboard__key--caps {
+    position: relative;
+    width: 100px;
+}
+
+.keyboard__key--caps-active::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: greenyellow;
 }
