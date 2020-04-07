@@ -7,6 +7,8 @@ const Keyboard = {
   elements: {
     container: null,
     main: null,
+    textArea: null,
+    mainKeys: null,
     keysContainer: null,
     keys: [],
   },
@@ -42,31 +44,34 @@ const Keyboard = {
 
   init() {
     // create main element
+    this.elements.container = document.createElement('div');
     this.elements.main = document.createElement('div');
     this.elements.keysContainer = document.createElement('div');
+    this.elements.textArea = document.createElement('textarea');
 
     // setup main element
-
+    this.elements.container.classList.add('container');
     this.elements.main.classList.add('keyboard');
-    this.elements.keysContainer.classList.add('keyboard__keys');
-    this.elements.keysContainer.append(this.createKeys());
-    this.elements.container = document.querySelector('.container');
-    this.elements.keys = this.elements.keysContainer.querySelectorAll('.keyboard__key');
-    this.textArea = document.querySelector('#input');
-    this.textArea.textContent = this.properties.value;
+    this.elements.textArea.classList.add('input');
 
     // add to DOM
-
+    this.elements.main.append(this.createKeys());
     this.elements.main.append(this.elements.keysContainer);
+    this.elements.container.append(this.elements.textArea);
     this.elements.container.append(this.elements.main);
+    document.body.prepend(this.elements.container);
 
-    // state
+    this.elements.keys = this.elements.main.querySelectorAll('.keyboard__key');
+  },
+
+  pushToTextArea() {
+    this.elements.textArea.textContent = this.properties.value;
   },
 
   createKeys() {
     const fragment = document.createDocumentFragment();
 
-    this.keyLayout.eng.forEach((key) => {
+    this.keyLayout.ru.forEach((key) => {
       const keyElement = document.createElement('button');
       const insertLineBreak = ['Backspace', 'Del', 'Enter', 'Shift '].indexOf(key) !== -1;
 
@@ -77,6 +82,14 @@ const Keyboard = {
 
       const getDeleteKey = this.properties.value.substring(0, this.properties.value.length - 1);
 
+      keyElement.addEventListener('mousedown', () => {
+        keyElement.classList.add('keyboard__key--down');
+      });
+
+      keyElement.addEventListener('mouseup', () => {
+        keyElement.classList.remove('keyboard__key--down');
+      });
+
       switch (key) {
         case 'Backspace':
           keyElement.classList.add('keyboard__key--wide');
@@ -84,7 +97,7 @@ const Keyboard = {
 
           keyElement.addEventListener('click', () => {
             this.properties.value = getDeleteKey;
-            this.textArea.textContent = this.properties.value;
+            this.pushToTextArea();
           });
 
           break;
@@ -95,7 +108,7 @@ const Keyboard = {
 
           keyElement.addEventListener('click', () => {
             this.properties.value = getDeleteKey;
-            this.textArea.textContent = this.properties.value;
+            this.pushToTextArea();
           });
 
           break;
@@ -104,18 +117,25 @@ const Keyboard = {
           keyElement.classList.add('keyboard__key--caps');
           keyElement.textContent = key;
 
-          keyElement.addEventListener('click', () => {
+          keyElement.addEventListener('click', (evt) => {
+            evt.preventDefault();
             this.toggleCapsLock();
-            keyElement.classList.toggle('keyboard__key--caps-active', this.properties.capsLock);
+            keyElement.classList.toggle('keyboard__key--caps-active');
           });
 
-          document.addEventListener('keydown', (event) => {
-            if (event.key === 'CapsLock') {
+          document.addEventListener('keyup', (evt) => {
+            evt.preventDefault();
+            keyElement.classList.remove('keyboard__key--down');
+          });
+
+          document.addEventListener('keydown', (evt) => {
+            evt.preventDefault();
+            if (evt.key === 'CapsLock') {
               this.toggleCapsLock();
-              keyElement.classList.toggle('keyboard__key--caps-active', this.properties.capsLock);
+              keyElement.classList.toggle('keyboard__key--caps-active');
+              keyElement.classList.add('keyboard__key--down');
             }
           });
-
 
           break;
 
@@ -125,7 +145,19 @@ const Keyboard = {
 
           keyElement.addEventListener('click', () => {
             this.properties.value += '\n';
-            this.textArea.textContent = this.properties.value;
+            this.pushToTextArea();
+          });
+
+          document.addEventListener('keyup', () => {
+            keyElement.classList.remove('keyboard__key--down');
+          });
+
+          document.addEventListener('keydown', (evt) => {
+            if (evt.key === 'Enter') {
+              keyElement.classList.add('keyboard__key--down');
+              this.properties.value += '\n';
+              this.pushToTextArea();
+            }
           });
 
           break;
@@ -136,7 +168,7 @@ const Keyboard = {
 
           keyElement.addEventListener('click', () => {
             this.properties.value += ' ';
-            this.textArea.textContent = this.properties.value;
+            this.pushToTextArea();
           });
 
           break;
@@ -148,22 +180,20 @@ const Keyboard = {
 
           keyElement.addEventListener('click', () => {
             this.toggleShift();
-            this.textArea.textContent = this.properties.value;
+            this.pushToTextArea();
           });
 
           document.addEventListener('keydown', (evt) => {
-            evt.preventDefault();
-
-            if (evt.key === 'Shift') {
+            if (evt.key === 'Shift' && !evt.repeat) {
               this.toggleShift();
-              this.textArea.textContent = this.properties.value;
+              this.pushToTextArea();
             }
           });
 
           document.addEventListener('keyup', (evt) => {
-            if (evt.key === 'Shift') {
+            if (evt.key === 'Shift' && !evt.repeat) {
               this.toggleShift();
-              this.textArea.textContent = this.properties.value;
+              this.pushToTextArea();
             }
           });
 
@@ -176,7 +206,7 @@ const Keyboard = {
 
           keyElement.addEventListener('click', () => {
             this.toggleShift();
-            this.textArea.textContent = this.properties.value;
+            this.pushToTextArea();
           });
 
           break;
@@ -185,9 +215,10 @@ const Keyboard = {
           keyElement.classList.add('keyboard__key--easy-wide');
           keyElement.textContent = key;
 
-          keyElement.addEventListener('click', () => {
-            this.properties.value += ' ';
-            this.textArea.textContent = this.properties.value;
+          keyElement.addEventListener('click', (evt) => {
+            evt.preventDefault();
+            this.properties.value += '  ';
+            this.pushToTextArea();
           });
 
           break;
@@ -195,22 +226,26 @@ const Keyboard = {
         default:
 
           keyElement.textContent = key;
+          keyElement.setAttribute('data-key', key);
 
           keyElement.addEventListener('click', () => {
             this.properties.value += this.properties.capsLock ? keyElement.textContent.toUpperCase() : keyElement.textContent.toLowerCase();
-            this.textArea.textContent = this.properties.value;
+            this.pushToTextArea();
           });
 
           document.addEventListener('keydown', (evt) => {
-            evt.preventDefault();
-
-            if (evt.key === `Key${keyElement.textContent}`) {
+            if (evt.key === keyElement.getAttribute('data-key')) {
               this.properties.value += this.properties.capsLock ? keyElement.textContent.toUpperCase() : keyElement.textContent.toLowerCase();
-              this.textArea.textContent = this.properties.value;
+              this.pushToTextArea();
+              keyElement.classList.add('keyboard__key--down');
             }
           });
 
-          break;
+          document.addEventListener('keyup', (evt) => {
+            if (evt.key === keyElement.getAttribute('data-key')) {
+              keyElement.classList.remove('keyboard__key--down');
+            }
+          });
       }
 
       fragment.append(keyElement);
@@ -227,6 +262,7 @@ const Keyboard = {
 
   toggleCapsLock() {
     this.properties.capsLock = !this.properties.capsLock;
+
     const letter = new RegExp('^[A-zА-яЁё]$');
 
     this.elements.keys.forEach((key) => {

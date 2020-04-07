@@ -10,10 +10,15 @@ body {
     height: 100vh;
 }
 
-#input {
-    width: 704px;
+.input {
+    width: 660px;
+    height: 40vh;
     margin-bottom: 40px;
+    padding: 20px;
+    border: 3px solid #222222;
+    border-radius: 5px;
     font-family: "Trebuchet MS", "Helvetica", sans-serif;
+    font-weight: bold;
 }
 
 /* keyboard */
@@ -40,6 +45,21 @@ body {
     font-size: 1.05rem;
     cursor: pointer;
     vertical-align: top;
+    overflow: hidden;
+    transition: .2s;
+}
+/*
+.keyboard__key:hover {
+    color: #fff6f6;
+    background-color: #252525;
+    box-shadow: 0 0 5px #252525;
+    font-weight: bold;
+}
+*/
+.keyboard__key--down {
+    color: #fff6f6;
+    background-color: #2a2323;
+    box-shadow: 0 0 5px #252525;
 }
 
 .keyboard__key--wide {
